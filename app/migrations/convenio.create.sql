@@ -1,0 +1,4 @@
+CREATE TABLE convenio (
+	id_convenio INT PRIMARY KEY AUTO_INCREMENT,
+	nome VARCHAR(100) NOT NULL
+);

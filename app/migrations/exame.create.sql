@@ -1,0 +1,4 @@
+CREATE TABLE exame (
+	id_exame INT PRIMARY KEY AUTO_INCREMENT,
+	nome_exame VARCHAR(100) NOT NULL
+);
