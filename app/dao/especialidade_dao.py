@@ -1,31 +1,31 @@
 from app.dao.dao import DAO
-from app.models.convenio import Convenio
+from app.models.especialidade import Especialidade
 
 
-class Convenio_DAO(DAO):
+class Especialidade_DAO(DAO):
 
     def __init__(self, database):
         super().__init__(database)
 
-    def save(self, convenio):
+    def save(self, especialidade):
 
         conexao, cursor = self.conectar()
 
         try:
             sql = """
-                    INSERT INTO convenio
-                        (nome)
+                    INSERT INTO especialidades
+                        (nome_especialidade)
                     VALUES
                         (%s)
                   """
 
-            cursor.execute(sql, (convenio.nome,))
+            cursor.execute(sql, (especialidade.nome,))
 
             conexao.commit()
 
-            convenio.id = cursor.lastrowid
+            especialidade.id = cursor.lastrowid
 
-            return convenio
+            return especialidade
 
         except Exception:
             conexao.rollback()
@@ -41,19 +41,19 @@ class Convenio_DAO(DAO):
         try:
             sql = """
                     SELECT
-                        id_convenio,
-                        nome
+                        id_especialidade,
+                        nome_especialidade
                     FROM
-                        convenio
+                        especialidades
                     ORDER BY
-                        nome
+                        nome_especialidade
                   """
 
             cursor.execute(sql)
 
             registros = cursor.fetchall()
 
-            return [Convenio(registro[0], registro[1]) for registro in registros]
+            return [Especialidade(registro[0], registro[1]) for registro in registros]
 
         finally:
             self.desconectar(cursor, conexao)
@@ -65,12 +65,12 @@ class Convenio_DAO(DAO):
         try:
             sql = """
                     SELECT
-                        id_convenio,
-                        nome
+                        id_especialidade,
+                        nome_especialidade
                     FROM
-                        convenio
+                        especialidades
                     WHERE
-                        id_convenio = %s
+                        id_especialidade = %s
                   """
 
             cursor.execute(sql, (id,))
@@ -80,25 +80,25 @@ class Convenio_DAO(DAO):
             if registro is None:
                 return None
 
-            return Convenio(registro[0], registro[1])
+            return Especialidade(registro[0], registro[1])
 
         finally:
             self.desconectar(cursor, conexao)
 
-    def update(self, convenio):
+    def update(self, especialidade):
 
         conexao, cursor = self.conectar()
 
         try:
             sql = """
-                    UPDATE convenio
+                    UPDATE especialidades
                     SET
-                        nome = %s
+                        nome_especialidade = %s
                     WHERE
-                        id_convenio = %s
+                        id_especialidade = %s
                   """
 
-            cursor.execute(sql, (convenio.nome, convenio.id))
+            cursor.execute(sql, (especialidade.nome, especialidade.id))
 
             conexao.commit()
 
@@ -117,8 +117,8 @@ class Convenio_DAO(DAO):
 
         try:
             sql = """
-                    DELETE FROM convenio
-                    WHERE id_convenio = %s
+                    DELETE FROM especialidades
+                    WHERE id_especialidade = %s
                   """
 
             cursor.execute(sql, (id,))

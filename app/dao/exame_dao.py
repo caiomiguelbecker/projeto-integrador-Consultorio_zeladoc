@@ -1,31 +1,31 @@
 from app.dao.dao import DAO
-from app.models.convenio import Convenio
+from app.models.exame import Exame
 
 
-class Convenio_DAO(DAO):
+class Exame_DAO(DAO):
 
     def __init__(self, database):
         super().__init__(database)
 
-    def save(self, convenio):
+    def save(self, exame):
 
         conexao, cursor = self.conectar()
 
         try:
             sql = """
-                    INSERT INTO convenio
-                        (nome)
+                    INSERT INTO exame
+                        (nome_exame)
                     VALUES
                         (%s)
                   """
 
-            cursor.execute(sql, (convenio.nome,))
+            cursor.execute(sql, (exame.nome,))
 
             conexao.commit()
 
-            convenio.id = cursor.lastrowid
+            exame.id = cursor.lastrowid
 
-            return convenio
+            return exame
 
         except Exception:
             conexao.rollback()
@@ -41,19 +41,19 @@ class Convenio_DAO(DAO):
         try:
             sql = """
                     SELECT
-                        id_convenio,
-                        nome
+                        id_exame,
+                        nome_exame
                     FROM
-                        convenio
+                        exame
                     ORDER BY
-                        nome
+                        nome_exame
                   """
 
             cursor.execute(sql)
 
             registros = cursor.fetchall()
 
-            return [Convenio(registro[0], registro[1]) for registro in registros]
+            return [Exame(registro[0], registro[1]) for registro in registros]
 
         finally:
             self.desconectar(cursor, conexao)
@@ -65,12 +65,12 @@ class Convenio_DAO(DAO):
         try:
             sql = """
                     SELECT
-                        id_convenio,
-                        nome
+                        id_exame,
+                        nome_exame
                     FROM
-                        convenio
+                        exame
                     WHERE
-                        id_convenio = %s
+                        id_exame = %s
                   """
 
             cursor.execute(sql, (id,))
@@ -80,25 +80,25 @@ class Convenio_DAO(DAO):
             if registro is None:
                 return None
 
-            return Convenio(registro[0], registro[1])
+            return Exame(registro[0], registro[1])
 
         finally:
             self.desconectar(cursor, conexao)
 
-    def update(self, convenio):
+    def update(self, exame):
 
         conexao, cursor = self.conectar()
 
         try:
             sql = """
-                    UPDATE convenio
+                    UPDATE exame
                     SET
-                        nome = %s
+                        nome_exame = %s
                     WHERE
-                        id_convenio = %s
+                        id_exame = %s
                   """
 
-            cursor.execute(sql, (convenio.nome, convenio.id))
+            cursor.execute(sql, (exame.nome, exame.id))
 
             conexao.commit()
 
@@ -117,8 +117,8 @@ class Convenio_DAO(DAO):
 
         try:
             sql = """
-                    DELETE FROM convenio
-                    WHERE id_convenio = %s
+                    DELETE FROM exame
+                    WHERE id_exame = %s
                   """
 
             cursor.execute(sql, (id,))

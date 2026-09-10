@@ -1,5 +1,4 @@
 colorama==0.4.6
-dotenv==0.9.9
-mysql-connector-python==9.7.0
 python-dotenv==1.2.2
+mysql-connector-python==9.7.0
 ttkbootstrap==2.2.2
