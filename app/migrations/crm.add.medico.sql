@@ -1,0 +1,2 @@
+ALTER TABLE medico
+ADD COLUMN crm VARCHAR(20) NOT NULL AFTER nome_medico;

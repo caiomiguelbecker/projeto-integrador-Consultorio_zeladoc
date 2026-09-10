@@ -1,162 +1,135 @@
 from app.dao.dao import DAO
 from app.models.convenio import Convenio
 
+
 class Convenio_DAO(DAO):
 
     def __init__(self, database):
         super().__init__(database)
-        
-    def save(self, Convenio):
-        
-        cursor, conexao = self.conectar()
-        
+
+    def save(self, convenio):
+
+        conexao, cursor = self.conectar()
+
         try:
-            
-            sql =   """
-                        INSERT INTO CONVENIO
-                            (
-                            NOME
-                            )
-                        VALUES
-                        (
-                            %s
-                        )                    
-                    """
-            cursor.execute(
-                sql,
-                (
-                    Convenio.nome,
-                )
-                )
-            
+            sql = """
+                    INSERT INTO convenio
+                        (nome)
+                    VALUES
+                        (%s)
+                  """
+
+            cursor.execute(sql, (convenio.nome,))
+
             conexao.commit()
-            
-            Convenio.id = cursor.lastrowid
-            return Convenio
-        
+
+            convenio.id = cursor.lastrowid
+
+            return convenio
+
         except Exception:
-                
-                conexao.rollback()
-                raise
+            conexao.rollback()
+            raise
+
         finally:
-                
-                self.desconectar(cursor, conexao)
-                
+            self.desconectar(cursor, conexao)
+
     def get_all(self):
-         
-        cursor, conexao = self.conectar()
-         
+
+        conexao, cursor = self.conectar()
+
         try:
-             
-            sql =   """
-                        SELECT 
-                            ID,
-                            NOME
-                        FROM
-                            CONVENIO
-                        ORDER BY
-                            NOME                        
-                    """
+            sql = """
+                    SELECT
+                        id_convenio,
+                        nome
+                    FROM
+                        convenio
+                    ORDER BY
+                        nome
+                  """
+
             cursor.execute(sql)
-            
+
             registros = cursor.fetchall()
-            convenios = []
-            
-            for registro in registros:
-                
-                convenios.append(
-                    Convenio(
-                    registro[0],
-                    registro[1]
-                    )
-                )
-            return convenios
-        
+
+            return [Convenio(registro[0], registro[1]) for registro in registros]
+
         finally:
-                
-                self.desconectar(cursor, conexao)
-                
+            self.desconectar(cursor, conexao)
+
     def get_by_id(self, id):
-        
-        cursor, conexao = self.conectar()
-        
+
+        conexao, cursor = self.conectar()
+
         try:
-            sql =  """
-                        SELECT 
-                            ID,
-                            NOME
-                        FROM
-                            CONVENIO
-                        WHERE
-                            ID = %s
-                    """
+            sql = """
+                    SELECT
+                        id_convenio,
+                        nome
+                    FROM
+                        convenio
+                    WHERE
+                        id_convenio = %s
+                  """
+
             cursor.execute(sql, (id,))
+
             registro = cursor.fetchone()
-            
+
             if registro is None:
                 return None
-            
-            return Convenio(
-                registro[0],
-                registro[1]
-            )
-            
+
+            return Convenio(registro[0], registro[1])
+
         finally:
-                
-                self.desconectar(cursor, conexao)
-                
-    def update(self, Convenio):
-        
-        cursor, conexao = self.conectar()
-        
+            self.desconectar(cursor, conexao)
+
+    def update(self, convenio):
+
+        conexao, cursor = self.conectar()
+
         try:
-            sql =   """
-                        UPDATE CONVENIO
-                        SET
-                            NOME = %s
-                        WHERE
-                            ID = %s
-                    """
-            cursor.execute(
-                sql,
-                (
-                    Convenio.nome,
-                    Convenio.id
-                )
-            )
-            
+            sql = """
+                    UPDATE convenio
+                    SET
+                        nome = %s
+                    WHERE
+                        id_convenio = %s
+                  """
+
+            cursor.execute(sql, (convenio.nome, convenio.id))
+
             conexao.commit()
-            
+
             return cursor.rowcount > 0
-        
+
         except Exception:
-                
-                conexao.rollback()
-                raise
+            conexao.rollback()
+            raise
+
         finally:
-                
-                self.desconectar(cursor, conexao)  
-    
-    
+            self.desconectar(cursor, conexao)
+
     def delete(self, id):
-        
-        cursor, conexao = self.conectar()
-        
-        try: 
-            sql =   """
-                        DELETE FROM CONVENIO
-                        WHERE ID = %s         
-                    """
-            
+
+        conexao, cursor = self.conectar()
+
+        try:
+            sql = """
+                    DELETE FROM convenio
+                    WHERE id_convenio = %s
+                  """
+
             cursor.execute(sql, (id,))
+
             conexao.commit()
+
             return cursor.rowcount > 0
-        
+
         except Exception:
-                
-                conexao.rollback()
-                raise
-        
+            conexao.rollback()
+            raise
+
         finally:
-                    
-                    self.desconectar(cursor, conexao)
+            self.desconectar(cursor, conexao)

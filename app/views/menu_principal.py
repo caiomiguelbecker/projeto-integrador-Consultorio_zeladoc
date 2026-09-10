@@ -1,91 +1,147 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-from app.core.idioma import t, trocar_idioma
 
-class Menu_Principal_View:
+from app.core.idioma import Idioma, trocar_idioma
 
-    def __init__(self):
-        self.janela = ttk.Window(themename="flatly")
-        self.janela.title("ZELADOC")
-        self.janela.geometry("300x560")
+from app.views.convenio_view import Convenio_View
+from app.views.especialidade_view import Especialidade_View
+from app.views.exame_view import Exame_View
+from app.views.usuario_view import Usuario_View
+from app.views.medico_view import Medico_View
+from app.views.paciente_view import Paciente_View
+from app.views.consulta_view import Consulta_View
+from app.views.prontuario_view import Prontuario_View
 
-        self.lbl_titulo = ttk.Label(self.janela, text="ZELADOC", font=("Arial", 18, "bold"))
-        self.lbl_titulo.pack(pady=15)
+from app.controller.convenio_controller import Convenio_Controller
+from app.controller.especialidade_controller import Especialidade_Controller
+from app.controller.exame_controller import Exame_Controller
+from app.controller.usuario_controller import Usuario_Controller
+from app.controller.medico_controller import Medico_Controller
+from app.controller.paciente_controller import Paciente_Controller
+from app.controller.consulta_controller import Consulta_Controller
+from app.controller.protuario_controller import Prontuario_Controller
 
-        self.btn_pacientes = ttk.Button(self.janela, text=t("menu_pacientes"), command=self.abrir_pacientes, bootstyle=PRIMARY, width=20)
-        self.btn_pacientes.pack(pady=6)
 
-        self.btn_medicos = ttk.Button(self.janela, text=t("menu_medicos"), command=self.abrir_medicos, bootstyle=PRIMARY, width=20)
-        self.btn_medicos.pack(pady=6)
+class Menu_Principal:
 
-        self.btn_consultas = ttk.Button(self.janela, text=t("menu_consultas"), command=self.abrir_consultas, bootstyle=PRIMARY, width=20)
-        self.btn_consultas.pack(pady=6)
+    def __init__(self, root, daos):
+        self.root = root
+        self.daos = daos
+        self.configurar_janela()
+        self.criar_componentes()
 
-        self.btn_usuarios = ttk.Button(self.janela, text=t("menu_usuarios"), command=self.abrir_usuarios, bootstyle=PRIMARY, width=20)
-        self.btn_usuarios.pack(pady=6)
+    def configurar_janela(self):
+        self.root.title(Idioma.t("app_titulo"))
+        self.root.geometry("420x520")
+        self.root.resizable(False, False)
 
-        self.btn_convenios = ttk.Button(self.janela, text=t("menu_convenios"), command=self.abrir_convenios, bootstyle=PRIMARY, width=20)
-        self.btn_convenios.pack(pady=6)
+    def criar_componentes(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
 
-        self.btn_especialidades = ttk.Button(self.janela, text=t("menu_especialidades"), command=self.abrir_especialidades, bootstyle=PRIMARY, width=20)
-        self.btn_especialidades.pack(pady=6)
+        self.lbl_titulo = ttk.Label(
+            self.root,
+            text=Idioma.t("app_titulo"),
+            font=("Arial", 22, "bold")
+        )
+        self.lbl_titulo.pack(pady=(25, 15))
 
-        self.btn_exames = ttk.Button(self.janela, text=t("menu_exames"), command=self.abrir_exames, bootstyle=PRIMARY, width=20)
-        self.btn_exames.pack(pady=6)
+        self.frm_botoes = ttk.Frame(self.root)
+        self.frm_botoes.pack(pady=10, fill=X, padx=40)
 
-        self.btn_prontuarios = ttk.Button(self.janela, text=t("menu_prontuarios"), command=self.abrir_prontuarios, bootstyle=PRIMARY, width=20)
-        self.btn_prontuarios.pack(pady=6)
+        botoes = [
+            (Idioma.t("menu_pacientes"), PRIMARY, self.abrir_pacientes),
+            (Idioma.t("menu_medicos"), PRIMARY, self.abrir_medicos),
+            (Idioma.t("menu_consultas"), PRIMARY, self.abrir_consultas),
+            (Idioma.t("menu_prontuarios"), PRIMARY, self.abrir_prontuarios),
+            (Idioma.t("menu_convenios"), INFO, self.abrir_convenios),
+            (Idioma.t("menu_especialidades"), INFO, self.abrir_especialidades),
+            (Idioma.t("menu_exames"), INFO, self.abrir_exames),
+            (Idioma.t("menu_usuarios"), INFO, self.abrir_usuarios),
+        ]
 
-        self.btn_idioma = ttk.Button(self.janela, text=t("menu_idioma"), command=self.mudar_idioma, bootstyle=SECONDARY, width=20)
-        self.btn_idioma.pack(pady=6)
+        for texto, estilo, comando in botoes:
+            btn = ttk.Button(self.frm_botoes, text=texto, bootstyle=estilo, width=30, command=comando)
+            btn.pack(pady=5)
 
-        self.btn_sair = ttk.Button(self.janela, text=t("menu_sair"), command=self.janela.destroy, bootstyle=DANGER, width=20)
-        self.btn_sair.pack(pady=6)
+        self.btn_idioma = ttk.Button(
+            self.root,
+            text=Idioma.t("menu_idioma"),
+            bootstyle=(SECONDARY, OUTLINE),
+            width=30,
+            command=self.alternar_idioma
+        )
+        self.btn_idioma.pack(pady=(15, 5))
 
-    def mudar_idioma(self):
+        self.btn_sair = ttk.Button(
+            self.root,
+            text=Idioma.t("menu_sair"),
+            bootstyle=DANGER,
+            width=30,
+            command=self.root.destroy
+        )
+        self.btn_sair.pack(pady=5)
+
+    def alternar_idioma(self):
         trocar_idioma()
-        self.btn_pacientes.config(text=t("menu_pacientes"))
-        self.btn_medicos.config(text=t("menu_medicos"))
-        self.btn_consultas.config(text=t("menu_consultas"))
-        self.btn_usuarios.config(text=t("menu_usuarios"))
-        self.btn_convenios.config(text=t("menu_convenios"))
-        self.btn_especialidades.config(text=t("menu_especialidades"))
-        self.btn_exames.config(text=t("menu_exames"))
-        self.btn_prontuarios.config(text=t("menu_prontuarios"))
-        self.btn_idioma.config(text=t("menu_idioma"))
-        self.btn_sair.config(text=t("menu_sair"))
-
-    def abrir_pacientes(self):
-        from app.views.paciente_view import Paciente_View
-        Paciente_View(self.janela)
-
-    def abrir_medicos(self):
-        from app.views.medico_view import Medico_View
-        Medico_View(self.janela)
-
-    def abrir_consultas(self):
-        from app.views.consulta_view import Consulta_View
-        Consulta_View(self.janela)
-
-    def abrir_usuarios(self):
-        from app.views.usuario_view import Usuario_View
-        Usuario_View(self.janela)
+        self.criar_componentes()
 
     def abrir_convenios(self):
-        from app.views.convenio_view import Convenio_View
-        Convenio_View(self.janela)
+        janela = ttk.Toplevel(self.root)
+        controller = Convenio_Controller(self.daos["convenio"], None)
+        view = Convenio_View(janela, controller)
+        controller.view = view
+        view.iniciar()
 
     def abrir_especialidades(self):
-        from app.views.especialidade_view import Especialidade_View
-        Especialidade_View(self.janela)
+        janela = ttk.Toplevel(self.root)
+        controller = Especialidade_Controller(self.daos["especialidade"], None)
+        view = Especialidade_View(janela, controller)
+        controller.view = view
+        view.iniciar()
 
     def abrir_exames(self):
-        from app.views.exame_view import Exame_View
-        Exame_View(self.janela)
+        janela = ttk.Toplevel(self.root)
+        controller = Exame_Controller(self.daos["exame"], None)
+        view = Exame_View(janela, controller)
+        controller.view = view
+        view.iniciar()
+
+    def abrir_usuarios(self):
+        janela = ttk.Toplevel(self.root)
+        controller = Usuario_Controller(self.daos["usuario"], None)
+        view = Usuario_View(janela, controller)
+        controller.view = view
+        view.iniciar()
+
+    def abrir_medicos(self):
+        janela = ttk.Toplevel(self.root)
+        controller = Medico_Controller(
+            self.daos["medico"], self.daos["especialidade"], self.daos["usuario"], None
+        )
+        view = Medico_View(janela, controller)
+        controller.view = view
+        view.iniciar()
+
+    def abrir_pacientes(self):
+        janela = ttk.Toplevel(self.root)
+        controller = Paciente_Controller(self.daos["paciente"], self.daos["convenio"], None)
+        view = Paciente_View(janela, controller)
+        controller.view = view
+        view.iniciar()
+
+    def abrir_consultas(self):
+        janela = ttk.Toplevel(self.root)
+        controller = Consulta_Controller(
+            self.daos["consulta"], self.daos["paciente"], self.daos["medico"], None
+        )
+        view = Consulta_View(janela, controller)
+        controller.view = view
+        view.iniciar()
 
     def abrir_prontuarios(self):
-        from app.views.prontuario_view import Prontuario_View
-        Prontuario_View(self.janela)
-
-    def iniciar(self):
-        self.janela.mainloop()
+        janela = ttk.Toplevel(self.root)
+        controller = Prontuario_Controller(self.daos["prontuario"], self.daos["paciente"], None)
+        view = Prontuario_View(janela, controller)
+        controller.view = view
+        view.iniciar()

@@ -1,180 +1,179 @@
 from app.dao.dao import DAO
 from app.models.usuario import Usuario
 
+
 class Usuario_DAO(DAO):
 
     def __init__(self, database):
         super().__init__(database)
-        
-    def save(self, Usuario):
-        
-        cursor, conexao = self.conectar()
-        
+
+    def save(self, usuario):
+
+        conexao, cursor = self.conectar()
+
         try:
-            
-            sql =   """
-                        INSERT INTO USUARIO
-                            (
-                            NOME,
-                            EMAIL,
-                            SENHA
-                            )
-                        VALUES
-                        (
-                            %s,
-                            %s,
-                            %s
-                        )                    
-                    """
+            sql = """
+                    INSERT INTO usuario
+                        (nome_usuario, email, senha)
+                    VALUES
+                        (%s, %s, %s)
+                  """
+
             cursor.execute(
                 sql,
-                (
-                    Usuario.nome,
-                    Usuario.email,
-                    Usuario.senha
-                )
-                )
-            
+                (usuario.nome, usuario.email, usuario.senha)
+            )
+
             conexao.commit()
-            
-            Usuario.id = cursor.lastrowid
-            return Usuario
-        
+
+            usuario.id = cursor.lastrowid
+
+            return usuario
+
         except Exception:
-                
-                conexao.rollback()
-                raise
+            conexao.rollback()
+            raise
+
         finally:
-                
-                self.desconectar(cursor, conexao)
-                
+            self.desconectar(cursor, conexao)
+
     def get_all(self):
-         
-        cursor, conexao = self.conectar()
-         
+
+        conexao, cursor = self.conectar()
+
         try:
-             
-            sql =   """
-                        SELECT 
-                            ID,
-                            NOME,
-                            EMAIL,
-                            SENHA
-                        FROM
-                            USUARIO
-                        ORDER BY
-                            NOME                        
-                    """
+            sql = """
+                    SELECT
+                        id_usuario,
+                        nome_usuario,
+                        email,
+                        senha
+                    FROM
+                        usuario
+                    ORDER BY
+                        nome_usuario
+                  """
+
             cursor.execute(sql)
-            
+
             registros = cursor.fetchall()
-            usuarios = []
-            
-            for registro in registros:
-                
-                usuarios.append(
-                    Usuario(
-                    registro[0],
-                    registro[1],
-                    registro[2],
-                    registro[3]
-                    )
-                )
-            return usuarios
-        
+
+            return [
+                Usuario(registro[0], registro[1], registro[2], registro[3])
+                for registro in registros
+            ]
+
         finally:
-                
-                self.desconectar(cursor, conexao)
-                
+            self.desconectar(cursor, conexao)
+
     def get_by_id(self, id):
-        
-        cursor, conexao = self.conectar()
-        
+
+        conexao, cursor = self.conectar()
+
         try:
-            sql =  """
-                        SELECT 
-                            ID,
-                            NOME,
-                            EMAIL,
-                            SENHA
-                        FROM
-                            USUARIO
-                        WHERE
-                            ID = %s
-                    """
+            sql = """
+                    SELECT
+                        id_usuario,
+                        nome_usuario,
+                        email,
+                        senha
+                    FROM
+                        usuario
+                    WHERE
+                        id_usuario = %s
+                  """
+
             cursor.execute(sql, (id,))
+
             registro = cursor.fetchone()
-            
+
             if registro is None:
                 return None
-            
-            return Usuario(
-                registro[0],
-                registro[1],
-                registro[2],
-                registro[3]
-            )
-            
+
+            return Usuario(registro[0], registro[1], registro[2], registro[3])
+
         finally:
-                
-                self.desconectar(cursor, conexao)
-                
-    def update(self, Usuario):
-        
-        cursor, conexao = self.conectar()
-        
+            self.desconectar(cursor, conexao)
+
+    def get_by_email(self, email):
+
+        conexao, cursor = self.conectar()
+
         try:
-            sql =   """
-                        UPDATE USUARIO
-                        SET
-                            NOME = %s,
-                            EMAIL = %s,
-                            SENHA = %s
-                        WHERE
-                            ID = %s
-                    """
+            sql = """
+                    SELECT
+                        id_usuario,
+                        nome_usuario,
+                        email,
+                        senha
+                    FROM
+                        usuario
+                    WHERE
+                        email = %s
+                  """
+
+            cursor.execute(sql, (email,))
+
+            registro = cursor.fetchone()
+
+            if registro is None:
+                return None
+
+            return Usuario(registro[0], registro[1], registro[2], registro[3])
+
+        finally:
+            self.desconectar(cursor, conexao)
+
+    def update(self, usuario):
+
+        conexao, cursor = self.conectar()
+
+        try:
+            sql = """
+                    UPDATE usuario
+                    SET
+                        nome_usuario = %s,
+                        email = %s,
+                        senha = %s
+                    WHERE
+                        id_usuario = %s
+                  """
+
             cursor.execute(
                 sql,
-                (
-                    Usuario.nome,
-                    Usuario.email,
-                    Usuario.senha,
-                    Usuario.id
-                )
+                (usuario.nome, usuario.email, usuario.senha, usuario.id)
             )
-            
+
             conexao.commit()
-            
+
             return cursor.rowcount > 0
-        
+
         except Exception:
-                
-                conexao.rollback()
-                raise
+            conexao.rollback()
+            raise
+
         finally:
-                
-                self.desconectar(cursor, conexao)  
-    
-    
+            self.desconectar(cursor, conexao)
+
     def delete(self, id):
-        
-        cursor, conexao = self.conectar()
-        
-        try: 
-            sql =   """
-                        DELETE FROM USUARIO
-                        WHERE ID = %s         
-                    """
-            
+
+        conexao, cursor = self.conectar()
+
+        try:
+            sql = """
+                    DELETE FROM usuario
+                    WHERE id_usuario = %s
+                  """
+
             cursor.execute(sql, (id,))
+
             conexao.commit()
+
             return cursor.rowcount > 0
-        
+
         except Exception:
-                
-                conexao.rollback()
-                raise
-        
+            conexao.rollback()
+            raise
+
         finally:
-                    
-                    self.desconectar(cursor, conexao)
+            self.desconectar(cursor, conexao)
