@@ -1,135 +1,163 @@
 from app.dao.dao import DAO
 from app.models.exame import Exame
 
-
 class Exame_DAO(DAO):
 
     def __init__(self, database):
         super().__init__(database)
-
-    def save(self, exame):
-
-        conexao, cursor = self.conectar()
-
+        
+    def save(self, Exame):
+        
+        cursor, conexao = self.conectar()
+        
         try:
-            sql = """
-                    INSERT INTO exame
-                        (nome_exame)
-                    VALUES
-                        (%s)
-                  """
-
-            cursor.execute(sql, (exame.nome,))
-
+            
+            sql =   """
+                        INSERT INTO EXAME
+                            (
+                            NOME
+                            )
+                        VALUES
+                        (
+                            %s
+                        )                    
+                    """
+            cursor.execute(
+                sql,
+                (
+                    Exame.nome,
+                )
+                )
+            
             conexao.commit()
-
-            exame.id = cursor.lastrowid
-
-            return exame
-
+            
+            Exame.id = cursor.lastrowid
+            return Exame
+        
         except Exception:
-            conexao.rollback()
-            raise
-
+                
+                conexao.rollback()
+                raise
         finally:
-            self.desconectar(cursor, conexao)
-
+                
+                self.desconectar(cursor, conexao)
+                
     def get_all(self):
-
-        conexao, cursor = self.conectar()
-
+         
+        cursor, conexao = self.conectar()
+         
         try:
-            sql = """
-                    SELECT
-                        id_exame,
-                        nome_exame
-                    FROM
-                        exame
-                    ORDER BY
-                        nome_exame
-                  """
-
+             
+            sql =   """
+                        SELECT 
+                            ID,
+                            NOME
+                        FROM
+                            EXAME
+                        ORDER BY
+                            NOME                        
+                    """
             cursor.execute(sql)
-
+            
             registros = cursor.fetchall()
-
-            return [Exame(registro[0], registro[1]) for registro in registros]
-
+            exames = []
+            
+            for registro in registros:
+                
+                exames.append(
+                    Exame(
+                    registro[0],
+                    registro[1]
+                    )
+                )
+            return exames
+        
         finally:
-            self.desconectar(cursor, conexao)
-
+                
+                self.desconectar(cursor, conexao)
+                
     def get_by_id(self, id):
-
-        conexao, cursor = self.conectar()
-
+        
+        cursor, conexao = self.conectar()
+        
         try:
-            sql = """
-                    SELECT
-                        id_exame,
-                        nome_exame
-                    FROM
-                        exame
-                    WHERE
-                        id_exame = %s
-                  """
-
+            sql =  """
+                        SELECT 
+                            ID,
+                            NOME
+                        FROM
+                            EXAME
+                        WHERE
+                            ID = %s
+                    """
             cursor.execute(sql, (id,))
-
             registro = cursor.fetchone()
-
+            
             if registro is None:
                 return None
-
-            return Exame(registro[0], registro[1])
-
+            
+            return Exame(
+                registro[0],
+                registro[1]
+            )
+            
         finally:
-            self.desconectar(cursor, conexao)
-
-    def update(self, exame):
-
-        conexao, cursor = self.conectar()
-
+                
+                self.desconectar(cursor, conexao)
+                
+    def update(self, Exame):
+        
+        cursor, conexao = self.conectar()
+        
         try:
-            sql = """
-                    UPDATE exame
-                    SET
-                        nome_exame = %s
-                    WHERE
-                        id_exame = %s
-                  """
-
-            cursor.execute(sql, (exame.nome, exame.id))
-
+            sql =   """
+                        UPDATE EXAME
+                        SET
+                            NOME = %s
+                        WHERE
+                            ID = %s
+                    """
+            cursor.execute(
+                sql,
+                (
+                    Exame.nome,
+                    Exame.id
+                )
+            )
+            
             conexao.commit()
-
+            
             return cursor.rowcount > 0
-
+        
         except Exception:
-            conexao.rollback()
-            raise
-
+                
+                conexao.rollback()
+                raise
         finally:
-            self.desconectar(cursor, conexao)
-
+                
+                self.desconectar(cursor, conexao)  
+    
+    
     def delete(self, id):
-
-        conexao, cursor = self.conectar()
-
-        try:
-            sql = """
-                    DELETE FROM exame
-                    WHERE id_exame = %s
-                  """
-
+        
+        cursor, conexao = self.conectar()
+        
+        try: 
+            sql =   """
+                        DELETE FROM EXAME
+                        WHERE ID = %s         
+                    """
+            
             cursor.execute(sql, (id,))
-
             conexao.commit()
-
             return cursor.rowcount > 0
-
+        
         except Exception:
-            conexao.rollback()
-            raise
-
+                
+                conexao.rollback()
+                raise
+        
         finally:
-            self.desconectar(cursor, conexao)
+                    
+                    self.desconectar(cursor, conexao)
+

@@ -1,26 +1,32 @@
 from app.dao.dao import DAO
-from app.models.usuario import Usuario
+from app.dao.paciente_dao import Paciente_DAO
+from app.models.endereco import Endereco
 
-class Usuario_DAO(DAO):
+class Endereco_DAO(DAO):
 
     def __init__(self, database):
         super().__init__(database)
+        self._paciente_dao = Paciente_DAO(database)
         
-    def save(self, Usuario):
+    def save(self, Endereco):
         
         cursor, conexao = self.conectar()
         
         try:
             
             sql =   """
-                        INSERT INTO USUARIO
+                        INSERT INTO ENDERECO
                             (
-                            NOME,
-                            EMAIL,
-                            SENHA
+                            LOGRADOURO,
+                            NUMERO,
+                            CIDADE,
+                            UF,
+                            ID_PACIENTE
                             )
                         VALUES
                         (
+                            %s,
+                            %s,
                             %s,
                             %s,
                             %s
@@ -29,16 +35,18 @@ class Usuario_DAO(DAO):
             cursor.execute(
                 sql,
                 (
-                    Usuario.nome,
-                    Usuario.email,
-                    Usuario.senha
+                    Endereco.logradouro,
+                    Endereco.numero,
+                    Endereco.cidade,
+                    Endereco.uf,
+                    Endereco.paciente.id
                 )
                 )
             
             conexao.commit()
             
-            Usuario.id = cursor.lastrowid
-            return Usuario
+            Endereco.id = cursor.lastrowid
+            return Endereco
         
         except Exception:
                 
@@ -57,30 +65,34 @@ class Usuario_DAO(DAO):
             sql =   """
                         SELECT 
                             ID,
-                            NOME,
-                            EMAIL,
-                            SENHA
+                            LOGRADOURO,
+                            NUMERO,
+                            CIDADE,
+                            UF,
+                            ID_PACIENTE
                         FROM
-                            USUARIO
+                            ENDERECO
                         ORDER BY
-                            NOME                        
+                            CIDADE                        
                     """
             cursor.execute(sql)
             
             registros = cursor.fetchall()
-            usuarios = []
+            enderecos = []
             
             for registro in registros:
                 
-                usuarios.append(
-                    Usuario(
+                enderecos.append(
+                    Endereco(
                     registro[0],
                     registro[1],
                     registro[2],
-                    registro[3]
+                    registro[3],
+                    registro[4],
+                    self._paciente_dao.get_by_id(registro[5])
                     )
                 )
-            return usuarios
+            return enderecos
         
         finally:
                 
@@ -94,11 +106,13 @@ class Usuario_DAO(DAO):
             sql =  """
                         SELECT 
                             ID,
-                            NOME,
-                            EMAIL,
-                            SENHA
+                            LOGRADOURO,
+                            NUMERO,
+                            CIDADE,
+                            UF,
+                            ID_PACIENTE
                         FROM
-                            USUARIO
+                            ENDERECO
                         WHERE
                             ID = %s
                     """
@@ -108,38 +122,44 @@ class Usuario_DAO(DAO):
             if registro is None:
                 return None
             
-            return Usuario(
+            return Endereco(
                 registro[0],
                 registro[1],
                 registro[2],
-                registro[3]
+                registro[3],
+                registro[4],
+                self._paciente_dao.get_by_id(registro[5])
             )
             
         finally:
                 
                 self.desconectar(cursor, conexao)
                 
-    def update(self, Usuario):
+    def update(self, Endereco):
         
         cursor, conexao = self.conectar()
         
         try:
             sql =   """
-                        UPDATE USUARIO
+                        UPDATE ENDERECO
                         SET
-                            NOME = %s,
-                            EMAIL = %s,
-                            SENHA = %s
+                            LOGRADOURO = %s,
+                            NUMERO = %s,
+                            CIDADE = %s,
+                            UF = %s,
+                            ID_PACIENTE = %s
                         WHERE
                             ID = %s
                     """
             cursor.execute(
                 sql,
                 (
-                    Usuario.nome,
-                    Usuario.email,
-                    Usuario.senha,
-                    Usuario.id
+                    Endereco.logradouro,
+                    Endereco.numero,
+                    Endereco.cidade,
+                    Endereco.uf,
+                    Endereco.paciente.id,
+                    Endereco.id
                 )
             )
             
@@ -162,7 +182,7 @@ class Usuario_DAO(DAO):
         
         try: 
             sql =   """
-                        DELETE FROM USUARIO
+                        DELETE FROM ENDERECO
                         WHERE ID = %s         
                     """
             
@@ -178,3 +198,4 @@ class Usuario_DAO(DAO):
         finally:
                     
                     self.desconectar(cursor, conexao)
+                    

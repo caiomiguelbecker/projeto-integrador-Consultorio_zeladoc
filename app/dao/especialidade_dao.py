@@ -1,135 +1,162 @@
 from app.dao.dao import DAO
 from app.models.especialidade import Especialidade
 
-
 class Especialidade_DAO(DAO):
 
     def __init__(self, database):
         super().__init__(database)
-
-    def save(self, especialidade):
-
-        conexao, cursor = self.conectar()
-
+        
+    def save(self, Especialidade):
+        
+        cursor, conexao = self.conectar()
+        
         try:
-            sql = """
-                    INSERT INTO especialidades
-                        (nome_especialidade)
-                    VALUES
-                        (%s)
-                  """
-
-            cursor.execute(sql, (especialidade.nome,))
-
+            
+            sql =   """
+                        INSERT INTO ESPECIALIDADE
+                            (
+                            NOME
+                            )
+                        VALUES
+                        (
+                            %s
+                        )                    
+                    """
+            cursor.execute(
+                sql,
+                (
+                    Especialidade.nome,
+                )
+                )
+            
             conexao.commit()
-
-            especialidade.id = cursor.lastrowid
-
-            return especialidade
-
+            
+            Especialidade.id = cursor.lastrowid
+            return Especialidade
+        
         except Exception:
-            conexao.rollback()
-            raise
-
+                
+                conexao.rollback()
+                raise
         finally:
-            self.desconectar(cursor, conexao)
-
+                
+                self.desconectar(cursor, conexao)
+                
     def get_all(self):
-
-        conexao, cursor = self.conectar()
-
+         
+        cursor, conexao = self.conectar()
+         
         try:
-            sql = """
-                    SELECT
-                        id_especialidade,
-                        nome_especialidade
-                    FROM
-                        especialidades
-                    ORDER BY
-                        nome_especialidade
-                  """
-
+             
+            sql =   """
+                        SELECT 
+                            ID,
+                            NOME
+                        FROM
+                            ESPECIALIDADE
+                        ORDER BY
+                            NOME                        
+                    """
             cursor.execute(sql)
-
+            
             registros = cursor.fetchall()
-
-            return [Especialidade(registro[0], registro[1]) for registro in registros]
-
+            especialidades = []
+            
+            for registro in registros:
+                
+                especialidades.append(
+                    Especialidade(
+                    registro[0],
+                    registro[1]
+                    )
+                )
+            return especialidades
+        
         finally:
-            self.desconectar(cursor, conexao)
-
+                
+                self.desconectar(cursor, conexao)
+                
     def get_by_id(self, id):
-
-        conexao, cursor = self.conectar()
-
+        
+        cursor, conexao = self.conectar()
+        
         try:
-            sql = """
-                    SELECT
-                        id_especialidade,
-                        nome_especialidade
-                    FROM
-                        especialidades
-                    WHERE
-                        id_especialidade = %s
-                  """
-
+            sql =  """
+                        SELECT 
+                            ID,
+                            NOME
+                        FROM
+                            ESPECIALIDADE
+                        WHERE
+                            ID = %s
+                    """
             cursor.execute(sql, (id,))
-
             registro = cursor.fetchone()
-
+            
             if registro is None:
                 return None
-
-            return Especialidade(registro[0], registro[1])
-
+            
+            return Especialidade(
+                registro[0],
+                registro[1]
+            )
+            
         finally:
-            self.desconectar(cursor, conexao)
-
-    def update(self, especialidade):
-
-        conexao, cursor = self.conectar()
-
+                
+                self.desconectar(cursor, conexao)
+                
+    def update(self, Especialidade):
+        
+        cursor, conexao = self.conectar()
+        
         try:
-            sql = """
-                    UPDATE especialidades
-                    SET
-                        nome_especialidade = %s
-                    WHERE
-                        id_especialidade = %s
-                  """
-
-            cursor.execute(sql, (especialidade.nome, especialidade.id))
-
+            sql =   """
+                        UPDATE ESPECIALIDADE
+                        SET
+                            NOME = %s
+                        WHERE
+                            ID = %s
+                    """
+            cursor.execute(
+                sql,
+                (
+                    Especialidade.nome,
+                    Especialidade.id
+                )
+            )
+            
             conexao.commit()
-
+            
             return cursor.rowcount > 0
-
+        
         except Exception:
-            conexao.rollback()
-            raise
-
+                
+                conexao.rollback()
+                raise
         finally:
-            self.desconectar(cursor, conexao)
-
+                
+                self.desconectar(cursor, conexao)  
+    
+    
     def delete(self, id):
-
-        conexao, cursor = self.conectar()
-
-        try:
-            sql = """
-                    DELETE FROM especialidades
-                    WHERE id_especialidade = %s
-                  """
-
+        
+        cursor, conexao = self.conectar()
+        
+        try: 
+            sql =   """
+                        DELETE FROM ESPECIALIDADE
+                        WHERE ID = %s         
+                    """
+            
             cursor.execute(sql, (id,))
-
             conexao.commit()
-
             return cursor.rowcount > 0
-
+        
         except Exception:
-            conexao.rollback()
-            raise
-
+                
+                conexao.rollback()
+                raise
+        
         finally:
-            self.desconectar(cursor, conexao)
+                    
+                    self.desconectar(cursor, conexao)
