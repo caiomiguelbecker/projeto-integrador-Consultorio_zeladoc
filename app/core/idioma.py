@@ -17,7 +17,7 @@ class Idioma:
             "menu_idioma": "English",
 
             "nome": "Nome:",
-            "data_nascimento": "Data de nascimento (DD/MM/AAAA):",
+            "data_nascimento": "Data de nascimento (AAAA-MM-DD):",
             "convenio_campo": "Convênio:",
             "logradouro": "Logradouro:",
             "numero": "Número:",
@@ -32,7 +32,7 @@ class Idioma:
 
             "paciente_campo": "Paciente:",
             "medico_campo": "Médico:",
-            "data_hora": "Data e hora (DD-MM-AAAA HH:MM):",
+            "data_hora": "Data e hora (AAAA-MM-DD HH:MM):",
             "agendar_consulta": "Agendar Consulta",
 
             "email": "Email:",
@@ -47,15 +47,6 @@ class Idioma:
             "cadastro_prontuario": "Cadastro de Prontuário",
 
             "botao_salvar": "Salvar",
-
-            "titulo_login": "Login",
-            "login_titulo": "Acesso ao sistema",
-            "botao_entrar": "Entrar",
-            "erro_titulo": "Erro",
-            "sucesso_titulo": "Sucesso",
-            "erro_campos_vazios": "Preencha email e senha.",
-            "login_sucesso_temp": "Login realizado (falta conectar ao banco).",
-            "idioma_erro": "Data de nascimento inválida, tente novamente.",
         },
         "en": {
             "app_titulo": "ZELADOC",
@@ -71,7 +62,7 @@ class Idioma:
             "menu_idioma": "Português",
 
             "nome": "Name:",
-            "data_nascimento": "Date of birth (MM/DD/YYYY):",
+            "data_nascimento": "Date of birth (YYYY-MM-DD):",
             "convenio_campo": "Insurance Plan:",
             "logradouro": "Street:",
             "numero": "Number:",
@@ -101,15 +92,6 @@ class Idioma:
             "cadastro_prontuario": "Medical Record Registration",
 
             "botao_salvar": "Save",
-
-            "titulo_login": "Login",
-            "login_titulo": "System Access",
-            "botao_entrar": "Sign In",
-            "erro_titulo": "Error",
-            "sucesso_titulo": "Success",
-            "erro_campos_vazios": "Please fill in email and password.",
-            "login_sucesso_temp": "Login successful (not yet connected to database).",
-            "idioma_erro": "Invalid date of birth, plase try again."
         }
     }
 
@@ -121,9 +103,10 @@ class Idioma:
     def t(cls, chave):
         return cls.TEXTOS[cls.ATUAL].get(chave, chave)
 
+
 def t(chave):
     return Idioma.t(chave)
 
+
 def trocar_idioma():
-    novo = "en" if Idioma.ATUAL == "pt" else "pt"
-    Idioma.definir(novo)
+    Idioma.definir("en" if Idioma.ATUAL == "pt" else "pt")
