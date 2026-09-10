@@ -1,6 +1,8 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+from ttkbootstrap.dialogs import Messagebox
 from app.core.idioma import t
+from app.core.data_utils import Data_Utils
 
 class Paciente_View:
     def __init__(self, master):
@@ -42,10 +44,17 @@ class Paciente_View:
 
     def salvar(self):
         nome = self.campo_nome.get()
-        data = self.campo_data.get()
+        data_texto = self.campo_data.get()
+
+        try:
+            data_convertida = Data_Utils.string_para_data(data_texto)
+        except ValueError:
+            Messagebox.show_error(t("idioma_erro"), t("erro_titulo"))
+            return
+        
         convenio = self.campo_convenio.get()
         logradouro = self.campo_logradouro.get()
         numero = self.campo_numero.get()
         cidade = self.campo_cidade.get()
         uf = self.campo_uf.get()
-        print(f"[TODO: ligar ao controller] Salvar paciente: {nome}, {data}, convênio: {convenio}, endereço: {logradouro}, {numero}, {cidade}/{uf}")
+        print(f"[TODO: ligar ao controller] Salvar paciente: {nome}, {data_convertida}, convênio: {convenio}, endereço: {logradouro}, {numero}, {cidade}/{uf}")
