@@ -65,8 +65,8 @@ class Menu_Principal:
         cai para o texto 'ZELADOC' como alternativa, sem quebrar a tela."""
         try:
             imagem = Image.open(CAMINHO_LOGO)
-            imagem.thumbnail((280, 280))  # redimensiona mantendo proporção
-            self.logo_img = ImageTk.PhotoImage(imagem)  # guarda referência!
+            imagem.thumbnail((580, 580)) 
+            self.logo_img = ImageTk.PhotoImage(imagem)  
 
             ttk.Label(parent, image=self.logo_img).pack(pady=(20, 10))
         except (FileNotFoundError, OSError):
@@ -82,7 +82,7 @@ class Menu_Principal:
                 logo_frame, text="DOC", font=("Segoe UI", 34, "bold"), bootstyle=INFO
             ).pack(side=LEFT)
 
-    # ------------------------------------------------------------------
+    
     def _montar_centro(self, parent):
         frame = ttk.Frame(parent)
         frame.grid(row=0, column=1, sticky="n")
@@ -103,7 +103,7 @@ class Menu_Principal:
         )
         sair_btn.pack(pady=6, padx=20, fill=X, ipady=8)
 
-    # ------------------------------------------------------------------
+   
     def _montar_menu_direita(self, parent):
         frame = ttk.Frame(parent)
         frame.grid(row=0, column=2, sticky="n", padx=10)
@@ -120,38 +120,40 @@ class Menu_Principal:
             )
             btn.pack(pady=6, fill=X, ipady=8)
 
-    # -------------------- Callbacks (ligue aqui as telas reais) --------------------
+   
     def abrir_pacientes(self):
-        print("Abrir tela: Pacientes")
-        # Ex: Paciente_View(self.master, self.daos["paciente"])
+        from app.views.paciente_view import Paciente_View
+        Paciente_View(self.janela)
+
+       
 
     def abrir_medicos(self):
         print("Abrir tela: Médicos")
-        # Ex: Medico_View(self.master, self.daos["medico"])
+       
 
     def abrir_consultas(self):
         print("Abrir tela: Consultas")
-        # Ex: Consulta_View(self.master, self.daos["consulta"])
+       
 
     def abrir_prontuarios(self):
         print("Abrir tela: Prontuários")
-        # Ex: Prontuario_View(self.master, self.daos["prontuario"])
+        
 
     def abrir_convenios(self):
         print("Abrir tela: Convênios")
-        # Ex: Convenio_View(self.master, self.daos["convenio"])
+       
 
     def abrir_especialidades(self):
         print("Abrir tela: Especialidades")
-        # Ex: Especialidade_View(self.master, self.daos["especialidade"])
+       
 
     def abrir_exames(self):
         print("Abrir tela: Exames")
-        # Ex: Exame_View(self.master, self.daos["exame"])
+        
 
     def abrir_usuarios(self):
         print("Abrir tela: Usuários")
-        # Ex: Usuario_View(self.master, self.daos["usuario"])
+     
 
     def sair(self):
         self.master.destroy()
