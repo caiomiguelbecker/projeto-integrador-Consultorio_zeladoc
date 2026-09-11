@@ -1,152 +1,157 @@
+import os
+
 import ttkbootstrap as ttk
-from ttkbootstrap.constants import *
+from ttkbootstrap.constants import PRIMARY, INFO, DANGER, LEFT, X, BOTH
+from PIL import Image, ImageTk
 
-from app.core.idioma import Idioma, trocar_idioma
-
-from app.views.convenio_view import Convenio_View
-from app.views.especialidade_view import Especialidade_View
-from app.views.exame_view import Exame_View
-from app.views.usuario_view import Usuario_View
-from app.views.medico_view import Medico_View
-from app.views.paciente_view import Paciente_View
-from app.views.consulta_view import Consulta_View
-from app.views.prontuario_view import Prontuario_View
-
-from app.controller.convenio_controller import Convenio_Controller
-from app.controller.especialidade_controller import Especialidade_Controller
-from app.controller.exame_controller import Exame_Controller
-from app.controller.usuario_controller import Usuario_Controller
-from app.controller.medico_controller import Medico_Controller
-from app.controller.paciente_controller import Paciente_Controller
-from app.controller.consulta_controller import Consulta_Controller
-from app.controller.protuario_controller import Prontuario_Controller
+# Caminho da logo: app/views/menu_principal.py -> volta 2 pastas -> assets/logo.png
+CAMINHO_LOGO = os.path.join(
+    os.path.dirname(__file__), "..", "..", "assets", "logo.png"
+)
 
 
 class Menu_Principal:
+    """
+    Tela de menu principal do ZelaDoc.
+    Recebe a janela (root) já criada pelo Zeladoc_Application e o
+    dicionário de DAOs, para poder repassá-los às próximas telas.
+    """
 
-    def __init__(self, root, daos):
-        self.root = root
+    def __init__(self, master, daos):
+        self.master = master
         self.daos = daos
-        self.configurar_janela()
-        self.criar_componentes()
 
-    def configurar_janela(self):
-        self.root.title(Idioma.t("app_titulo"))
-        self.root.geometry("420x520")
-        self.root.resizable(False, False)
+        self.master.title("ZelaDoc - Menu Principal")
+        self.master.geometry("1100x650")
+        self.master.minsize(950, 600)
 
-    def criar_componentes(self):
-        for widget in self.root.winfo_children():
-            widget.destroy()
+        self._montar_layout()
 
-        self.lbl_titulo = ttk.Label(
-            self.root,
-            text=Idioma.t("app_titulo"),
-            font=("Arial", 22, "bold")
-        )
-        self.lbl_titulo.pack(pady=(25, 15))
+    # ------------------------------------------------------------------
+    def _montar_layout(self):
+        container = ttk.Frame(self.master, padding=40)
+        container.pack(expand=True, fill=BOTH)
 
-        self.frm_botoes = ttk.Frame(self.root)
-        self.frm_botoes.pack(pady=10, fill=X, padx=40)
+        container.columnconfigure(0, weight=1)
+        container.columnconfigure(1, weight=2)
+        container.columnconfigure(2, weight=1)
 
-        botoes = [
-            (Idioma.t("menu_pacientes"), PRIMARY, self.abrir_pacientes),
-            (Idioma.t("menu_medicos"), PRIMARY, self.abrir_medicos),
-            (Idioma.t("menu_consultas"), PRIMARY, self.abrir_consultas),
-            (Idioma.t("menu_prontuarios"), PRIMARY, self.abrir_prontuarios),
-            (Idioma.t("menu_convenios"), INFO, self.abrir_convenios),
-            (Idioma.t("menu_especialidades"), INFO, self.abrir_especialidades),
-            (Idioma.t("menu_exames"), INFO, self.abrir_exames),
-            (Idioma.t("menu_usuarios"), INFO, self.abrir_usuarios),
+        self._montar_menu_esquerda(container)
+        self._montar_centro(container)
+        self._montar_menu_direita(container)
+
+    # ------------------------------------------------------------------
+    def _montar_menu_esquerda(self, parent):
+        frame = ttk.Frame(parent)
+        frame.grid(row=0, column=0, sticky="n", padx=10)
+
+        itens = [
+            ("👤  Pacientes", PRIMARY, self.abrir_pacientes),
+            ("🩺  Médicos", PRIMARY, self.abrir_medicos),
+            ("🔬  Consultas", PRIMARY, self.abrir_consultas),
+            ("📋  Prontuários", PRIMARY, self.abrir_prontuarios),
+            ("🛡  Convênios", INFO, self.abrir_convenios),
         ]
 
-        for texto, estilo, comando in botoes:
-            btn = ttk.Button(self.frm_botoes, text=texto, bootstyle=estilo, width=30, command=comando)
-            btn.pack(pady=5)
+        for texto, estilo, comando in itens:
+            btn = ttk.Button(
+                frame, text=texto, bootstyle=estilo, width=22, command=comando
+            )
+            btn.pack(pady=6, fill=X, ipady=8)
 
-        self.btn_idioma = ttk.Button(
-            self.root,
-            text=Idioma.t("menu_idioma"),
-            bootstyle=(SECONDARY, OUTLINE),
-            width=30,
-            command=self.alternar_idioma
+    # ------------------------------------------------------------------
+    def _montar_logo(self, parent):
+        """Carrega a imagem da logo (assets/logo.png). Se não encontrar,
+        cai para o texto 'ZELADOC' como alternativa, sem quebrar a tela."""
+        try:
+            imagem = Image.open(CAMINHO_LOGO)
+            imagem.thumbnail((280, 280))  # redimensiona mantendo proporção
+            self.logo_img = ImageTk.PhotoImage(imagem)  # guarda referência!
+
+            ttk.Label(parent, image=self.logo_img).pack(pady=(20, 10))
+        except (FileNotFoundError, OSError):
+            logo_frame = ttk.Frame(parent)
+            logo_frame.pack(pady=(20, 10))
+            ttk.Label(
+                logo_frame,
+                text="ZELA",
+                font=("Segoe UI", 34, "bold"),
+                bootstyle=PRIMARY,
+            ).pack(side=LEFT)
+            ttk.Label(
+                logo_frame, text="DOC", font=("Segoe UI", 34, "bold"), bootstyle=INFO
+            ).pack(side=LEFT)
+
+    # ------------------------------------------------------------------
+    def _montar_centro(self, parent):
+        frame = ttk.Frame(parent)
+        frame.grid(row=0, column=1, sticky="n")
+
+        self._montar_logo(frame)
+
+        self.idioma_var = ttk.StringVar(value="English")
+        idioma_combo = ttk.Combobox(
+            frame,
+            textvariable=self.idioma_var,
+            values=["Português", "English"],
+            state="readonly",
         )
-        self.btn_idioma.pack(pady=(15, 5))
+        idioma_combo.pack(pady=(30, 12), fill=X, padx=20, ipady=4)
 
-        self.btn_sair = ttk.Button(
-            self.root,
-            text=Idioma.t("menu_sair"),
-            bootstyle=DANGER,
-            width=30,
-            command=self.root.destroy
+        sair_btn = ttk.Button(
+            frame, text="↪  Sair", bootstyle=DANGER, width=22, command=self.sair
         )
-        self.btn_sair.pack(pady=5)
+        sair_btn.pack(pady=6, padx=20, fill=X, ipady=8)
 
-    def alternar_idioma(self):
-        trocar_idioma()
-        self.criar_componentes()
+    # ------------------------------------------------------------------
+    def _montar_menu_direita(self, parent):
+        frame = ttk.Frame(parent)
+        frame.grid(row=0, column=2, sticky="n", padx=10)
 
-    def abrir_convenios(self):
-        janela = ttk.Toplevel(self.root)
-        controller = Convenio_Controller(self.daos["convenio"], None)
-        view = Convenio_View(janela, controller)
-        controller.view = view
-        view.iniciar()
+        itens = [
+            ("⭐  Especialidades", INFO, self.abrir_especialidades),
+            ("🧾  Exames", INFO, self.abrir_exames),
+            ("👥  Usuários", INFO, self.abrir_usuarios),
+        ]
 
-    def abrir_especialidades(self):
-        janela = ttk.Toplevel(self.root)
-        controller = Especialidade_Controller(self.daos["especialidade"], None)
-        view = Especialidade_View(janela, controller)
-        controller.view = view
-        view.iniciar()
+        for texto, estilo, comando in itens:
+            btn = ttk.Button(
+                frame, text=texto, bootstyle=estilo, width=22, command=comando
+            )
+            btn.pack(pady=6, fill=X, ipady=8)
 
-    def abrir_exames(self):
-        janela = ttk.Toplevel(self.root)
-        controller = Exame_Controller(self.daos["exame"], None)
-        view = Exame_View(janela, controller)
-        controller.view = view
-        view.iniciar()
-
-    def abrir_usuarios(self):
-        janela = ttk.Toplevel(self.root)
-        controller = Usuario_Controller(self.daos["usuario"], None)
-        view = Usuario_View(janela, controller)
-        controller.view = view
-        view.iniciar()
+    # -------------------- Callbacks (ligue aqui as telas reais) --------------------
+    def abrir_pacientes(self):
+        print("Abrir tela: Pacientes")
+        # Ex: Paciente_View(self.master, self.daos["paciente"])
 
     def abrir_medicos(self):
-        janela = ttk.Toplevel(self.root)
-        controller = Medico_Controller(
-            self.daos["medico"], self.daos["especialidade"], self.daos["usuario"], None
-        )
-        view = Medico_View(janela, controller)
-        controller.view = view
-        view.iniciar()
-
-    def abrir_pacientes(self):
-        janela = ttk.Toplevel(self.root)
-        controller = Paciente_Controller(self.daos["paciente"], self.daos["convenio"], None)
-        view = Paciente_View(janela, controller)
-        controller.view = view
-        view.iniciar()
+        print("Abrir tela: Médicos")
+        # Ex: Medico_View(self.master, self.daos["medico"])
 
     def abrir_consultas(self):
-        janela = ttk.Toplevel(self.root)
-        controller = Consulta_Controller(
-            self.daos["consulta"],
-            self.daos["paciente"],
-            self.daos["medico"],
-            self.daos["exame"],
-            self.daos["consulta_exame"],
-            None
-        )
-        view = Consulta_View(janela, controller)
-        controller.view = view
-        view.iniciar()
-        
+        print("Abrir tela: Consultas")
+        # Ex: Consulta_View(self.master, self.daos["consulta"])
+
     def abrir_prontuarios(self):
-        janela = ttk.Toplevel(self.root)
-        controller = Prontuario_Controller(self.daos["prontuario"], self.daos["paciente"], None)
-        view = Prontuario_View(janela, controller)
-        controller.view = view
-        view.iniciar()
+        print("Abrir tela: Prontuários")
+        # Ex: Prontuario_View(self.master, self.daos["prontuario"])
+
+    def abrir_convenios(self):
+        print("Abrir tela: Convênios")
+        # Ex: Convenio_View(self.master, self.daos["convenio"])
+
+    def abrir_especialidades(self):
+        print("Abrir tela: Especialidades")
+        # Ex: Especialidade_View(self.master, self.daos["especialidade"])
+
+    def abrir_exames(self):
+        print("Abrir tela: Exames")
+        # Ex: Exame_View(self.master, self.daos["exame"])
+
+    def abrir_usuarios(self):
+        print("Abrir tela: Usuários")
+        # Ex: Usuario_View(self.master, self.daos["usuario"])
+
+    def sair(self):
+        self.master.destroy()
