@@ -31,10 +31,15 @@ class Medico_Controller:
             self.view.exibir_mensagem(Idioma.t("medico.cadastrado_sucesso"))
         except ValueError as e:
             self.view.exibir_mensagem(f"{Idioma.t('comum.erro_prefixo')}{Idioma.t(str(e))}", False)
+        except Exception as e:
+            self.view.exibir_mensagem(f"Erro ao salvar médico: {e}", False)
 
     def get_all(self):
-        medicos = self.dao.get_all()
-        self.view.exibir_medicos(medicos)
+        try:
+            medicos = self.dao.get_all()
+            self.view.exibir_medicos(medicos)
+        except Exception as e:
+            self.view.exibir_mensagem(f"Erro ao carregar médicos: {e}", False)
 
     def selecionar_medico(self, event):
         try:
@@ -56,6 +61,8 @@ class Medico_Controller:
             self.view.exibir_mensagem(Idioma.t("medico.atualizado_sucesso"))
         except ValueError as e:
             self.view.exibir_mensagem(f"{Idioma.t('comum.erro_prefixo')}{Idioma.t(str(e))}", False)
+        except Exception as e:
+            self.view.exibir_mensagem(f"Erro ao atualizar médico: {e}", False)
 
     def delete(self):
         if self.medico_selecionado is None:

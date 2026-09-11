@@ -167,6 +167,19 @@ class Idioma:
             "prontuario.erro_ao_excluir": "Problemas ao excluir prontuário",
             "prontuario.erro_observacoes_vazias": "As observações não podem ficar vazias.",
             "prontuario.erro_paciente_nao_selecionado": "Selecione um paciente para o prontuário.",
+            
+            "consulta.exames_frame": "Exames desta consulta",
+            "consulta.exame": "Exame",
+            "consulta.adicionar_exame": "Adicionar exame",
+            "consulta.remover_exame": "Remover exame",
+            "consulta.exame_adicionado_sucesso": "Exame adicionado à consulta!",
+            "consulta.exame_removido_sucesso": "Exame removido da consulta!",
+            "consulta.erro_exame_nao_selecionado": "Selecione um exame para adicionar.",
+            "consulta.erro_exame_nao_selecionado_lista": "Selecione um exame na lista para remover.",
+            "consulta.erro_exame_ja_vinculado": "Este exame já está vinculado a esta consulta.",
+            "consulta.erro_salve_consulta_primeiro": "Salve a consulta antes de adicionar exames.",
+            "consulta.erro_ao_adicionar_exame": "Problemas ao adicionar exame à consulta",
+            "consulta.erro_ao_remover_exame": "Problemas ao remover exame da consulta",
         },
         "en": {
 
@@ -332,6 +345,19 @@ class Idioma:
             "prontuario.erro_ao_excluir": "Problem deleting medical record",
             "prontuario.erro_observacoes_vazias": "The notes cannot be empty.",
             "prontuario.erro_paciente_nao_selecionado": "Select a patient for the medical record.",
+            
+            "consulta.exames_frame": "Exams for this appointment",
+            "consulta.exame": "Exam",
+            "consulta.adicionar_exame": "Add exam",
+            "consulta.remover_exame": "Remove exam",
+            "consulta.exame_adicionado_sucesso": "Exam added to the appointment!",
+            "consulta.exame_removido_sucesso": "Exam removed from the appointment!",
+            "consulta.erro_exame_nao_selecionado": "Select an exam to add.",
+            "consulta.erro_exame_nao_selecionado_lista": "Select an exam from the list to remove.",
+            "consulta.erro_exame_ja_vinculado": "This exam is already linked to this appointment.",
+            "consulta.erro_salve_consulta_primeiro": "Save the appointment before adding exams.",
+            "consulta.erro_ao_adicionar_exame": "Problem adding exam to appointment",
+            "consulta.erro_ao_remover_exame": "Problem removing exam from appointment",
         }
     }
 

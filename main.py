@@ -9,6 +9,7 @@ from app.dao.usuario_dao import Usuario_DAO
 from app.dao.medico_dao import Medico_DAO
 from app.dao.paciente_dao import Paciente_DAO
 from app.dao.consulta_dao import Consulta_DAO
+from app.dao.consulta_exame_dao import Consulta_Exame_DAO
 from app.dao.prontuario_dao import Prontuario_DAO
 
 from app.views.menu_principal import Menu_Principal
@@ -28,6 +29,7 @@ class Zeladoc_Application:
         medico_dao = Medico_DAO(self.database, especialidade_dao, usuario_dao)
         paciente_dao = Paciente_DAO(self.database, convenio_dao)
         consulta_dao = Consulta_DAO(self.database, paciente_dao, medico_dao)
+        consulta_exame_dao = Consulta_Exame_DAO(self.database)
         prontuario_dao = Prontuario_DAO(self.database, paciente_dao)
 
         return {
@@ -38,6 +40,7 @@ class Zeladoc_Application:
             "medico": medico_dao,
             "paciente": paciente_dao,
             "consulta": consulta_dao,
+            "consulta_exame": consulta_exame_dao,
             "prontuario": prontuario_dao,
         }
 

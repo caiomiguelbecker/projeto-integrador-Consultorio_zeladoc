@@ -133,12 +133,17 @@ class Menu_Principal:
     def abrir_consultas(self):
         janela = ttk.Toplevel(self.root)
         controller = Consulta_Controller(
-            self.daos["consulta"], self.daos["paciente"], self.daos["medico"], None
+            self.daos["consulta"],
+            self.daos["paciente"],
+            self.daos["medico"],
+            self.daos["exame"],
+            self.daos["consulta_exame"],
+            None
         )
         view = Consulta_View(janela, controller)
         controller.view = view
         view.iniciar()
-
+        
     def abrir_prontuarios(self):
         janela = ttk.Toplevel(self.root)
         controller = Prontuario_Controller(self.daos["prontuario"], self.daos["paciente"], None)
