@@ -66,7 +66,9 @@ class Medico_DAO(DAO):
 
             registros = cursor.fetchall()
 
-            return [self._montar_medico(registro) for registro in registros]
+            medicos = [self._montar_medico(registro) for registro in registros]
+
+            return [medico for medico in medicos if medico is not None]
 
         finally:
             self.desconectar(cursor, conexao)
@@ -104,6 +106,15 @@ class Medico_DAO(DAO):
     def _montar_medico(self, registro):
         especialidade = self._especialidade_dao.get_by_id(registro[3])
         usuario = self._usuario_dao.get_by_id(registro[4])
+
+        if especialidade is None or usuario is None:
+            
+            print(
+                f"[Medico_DAO] Médico id={registro[0]} ignorado: "
+                f"especialidade={especialidade} usuario={usuario}"
+            )
+            return None
+
         return Medico(registro[0], registro[1], registro[2], especialidade, usuario)
 
     def update(self, medico):
@@ -149,8 +160,7 @@ class Medico_DAO(DAO):
         conexao, cursor = self.conectar()
 
         try:
-            # Remove primeiro as consultas desse médico
-            # (consulta tem FOREIGN KEY para medico).
+            
             cursor.execute("DELETE FROM consulta WHERE id_medico = %s", (id,))
 
             sql = """

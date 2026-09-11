@@ -60,7 +60,9 @@ class Consulta_DAO(DAO):
 
             registros = cursor.fetchall()
 
-            return [self._montar_consulta(registro) for registro in registros]
+            consultas = [self._montar_consulta(registro) for registro in registros]
+
+            return [consulta for consulta in consultas if consulta is not None]
 
         finally:
             self.desconectar(cursor, conexao)
@@ -117,7 +119,9 @@ class Consulta_DAO(DAO):
 
             registros = cursor.fetchall()
 
-            return [self._montar_consulta(registro) for registro in registros]
+            consultas = [self._montar_consulta(registro) for registro in registros]
+
+            return [consulta for consulta in consultas if consulta is not None]
 
         finally:
             self.desconectar(cursor, conexao)
@@ -145,7 +149,9 @@ class Consulta_DAO(DAO):
 
             registros = cursor.fetchall()
 
-            return [self._montar_consulta(registro) for registro in registros]
+            consultas = [self._montar_consulta(registro) for registro in registros]
+
+            return [consulta for consulta in consultas if consulta is not None]
 
         finally:
             self.desconectar(cursor, conexao)
@@ -153,6 +159,15 @@ class Consulta_DAO(DAO):
     def _montar_consulta(self, registro):
         paciente = self._paciente_dao.get_by_id(registro[2])
         medico = self._medico_dao.get_by_id(registro[3])
+
+        if paciente is None or medico is None:
+    
+            print(
+                f"[Consulta_DAO] Consulta id={registro[0]} ignorada: "
+                f"paciente={paciente} medico={medico}"
+            )
+            return None
+
         return Consulta(registro[0], registro[1], paciente, medico)
 
     def update(self, consulta):
@@ -196,6 +211,10 @@ class Consulta_DAO(DAO):
         conexao, cursor = self.conectar()
 
         try:
+            cursor.execute(
+                "DELETE FROM consulta_exame WHERE id_consulta = %s", (id,)
+            )
+
             sql = """
                     DELETE FROM consulta
                     WHERE id_consulta = %s

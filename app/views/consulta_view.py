@@ -4,6 +4,7 @@ from tkinter import messagebox
 
 from app.core.idioma import Idioma
 from app.core.data_utils import Data_Utils
+from app.models.exame import Exame
 
 
 class Consulta_View:
@@ -12,6 +13,7 @@ class Consulta_View:
         self.controller = controller
         self._pacientes = []
         self._medicos = []
+        self._exames = []
         self.configurar_janela()
         self.criar_componentes()
         self.configurar_treeview()
@@ -19,7 +21,7 @@ class Consulta_View:
 
     def configurar_janela(self):
         self.root.title(Idioma.t("consulta.janela_titulo"))
-        self.root.geometry("720x560")
+        self.root.geometry("720x760")
         self.root.resizable(False, False)
 
     def criar_componentes(self):
@@ -58,6 +60,43 @@ class Consulta_View:
         self.lbl_medico.grid(row=2, column=0, padx=5, pady=5, sticky=W)
         self.cmb_medico = ttk.Combobox(self.frm_dados, width=37, state="readonly")
         self.cmb_medico.grid(row=2, column=1, padx=5, pady=5, columnspan=3, sticky=W)
+
+        # --- Exames vinculados a esta consulta ---
+        self.frm_exames = ttk.Labelframe(
+            self.root,
+            text=Idioma.t("consulta.exames_frame"),
+            padding=10
+        )
+        self.frm_exames.pack(fill=X, padx=15, pady=5)
+        self.frm_exames.grid_columnconfigure(0, weight=1)
+
+        self.lbl_exame = ttk.Label(self.frm_exames, text=f"{Idioma.t('consulta.exame')}:")
+        self.lbl_exame.grid(row=0, column=0, padx=5, pady=5, sticky=W)
+
+        self.cmb_exame = ttk.Combobox(self.frm_exames, width=30, state="readonly")
+        self.cmb_exame.grid(row=1, column=0, padx=5, pady=5, sticky=(W, E))
+
+        self.btn_adicionar_exame = ttk.Button(
+            self.frm_exames,
+            text=Idioma.t("consulta.adicionar_exame"),
+            bootstyle=SUCCESS,
+            width=16
+        )
+        self.btn_adicionar_exame.grid(row=1, column=1, padx=5, pady=5)
+
+        self.btn_remover_exame = ttk.Button(
+            self.frm_exames,
+            text=Idioma.t("consulta.remover_exame"),
+            bootstyle=DANGER,
+            width=16
+        )
+        self.btn_remover_exame.grid(row=1, column=2, padx=5, pady=5)
+
+        self.lst_exames = ttk.Treeview(
+            self.frm_exames, height=4, bootstyle=INFO, show="tree", selectmode="browse"
+        )
+        self.lst_exames.grid(row=2, column=0, columnspan=3, padx=5, pady=(5, 0), sticky=(W, E))
+        self.lst_exames.column("#0", width=650)
 
         self.frm_botoes = ttk.Frame(self.root)
         self.frm_botoes.pack(pady=10)
@@ -98,6 +137,8 @@ class Consulta_View:
         self.btn_alterar.config(command=self.controller.update)
         self.btn_excluir.config(command=self.controller.delete)
         self.btn_fechar.config(command=self.fechar)
+        self.btn_adicionar_exame.config(command=self.controller.adicionar_exame)
+        self.btn_remover_exame.config(command=self.controller.remover_exame)
         self.tbl_consultas.bind("<<TreeviewSelect>>", self.controller.selecionar_consulta)
 
     def carregar_pacientes(self, pacientes):
@@ -111,6 +152,32 @@ class Consulta_View:
         valores = [f"{m.id} - {m.nome}" for m in medicos]
         self.cmb_medico["values"] = valores
         self.cmb_medico.set("")
+
+    def carregar_exames(self, exames):
+        self._exames = exames
+        valores = [f"{e.id} - {e.nome}" for e in exames]
+        self.cmb_exame["values"] = valores
+        self.cmb_exame.set("")
+
+    def exibir_exames_consulta(self, exames):
+        for item in self.lst_exames.get_children():
+            self.lst_exames.delete(item)
+        for exame in exames:
+            self.lst_exames.insert("", "end", iid=str(exame.id), text=exame.nome)
+
+    def get_exame_para_adicionar(self):
+        indice = self.cmb_exame.current()
+        if indice < 0:
+            raise ValueError("consulta.erro_exame_nao_selecionado")
+        return self._exames[indice]
+
+    def get_exame_selecionado_para_remover(self):
+        selecao = self.lst_exames.selection()
+        if not selecao:
+            raise ValueError("consulta.erro_exame_nao_selecionado_lista")
+        id_exame = int(selecao[0])
+        nome_exame = self.lst_exames.item(selecao[0])["text"]
+        return Exame(id_exame, nome_exame)
 
     def preencher_campos(self, consulta):
         self.limpar_campos()
@@ -136,6 +203,8 @@ class Consulta_View:
         self.txt_data_hora.delete(0, "end")
         self.cmb_paciente.set("")
         self.cmb_medico.set("")
+        self.cmb_exame.set("")
+        self.exibir_exames_consulta([])
         self.txt_data_hora.focus()
 
     def limpar_treeview(self):
@@ -193,4 +262,5 @@ class Consulta_View:
     def iniciar(self):
         self.controller.carregar_pacientes()
         self.controller.carregar_medicos()
+        self.controller.carregar_exames()
         self.controller.get_all()
