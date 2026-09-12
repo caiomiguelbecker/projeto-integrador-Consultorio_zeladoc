@@ -10,7 +10,9 @@ from app.dao.medico_dao import Medico_DAO
 from app.dao.paciente_dao import Paciente_DAO
 from app.dao.consulta_dao import Consulta_DAO
 from app.dao.prontuario_dao import Prontuario_DAO
+from app.controller.usuario_controller import Usuario_Controller
 from app.views.menu_principal import Menu_Principal
+from app.views.login_view import LoginView
 
 
 class Zeladoc_Application:
@@ -18,6 +20,7 @@ class Zeladoc_Application:
     def __init__(self):
         self.database = Database()
         self.daos = self._criar_daos()
+        self.usuario_controller = Usuario_Controller(self.daos["usuario"])
 
     def _criar_daos(self):
         convenio_dao = Convenio_DAO(self.database)
@@ -41,7 +44,12 @@ class Zeladoc_Application:
         }
 
     def iniciar(self):
+        login = LoginView(self.usuario_controller, ao_autenticar=self._abrir_menu_principal)
+        login.janela.mainloop()
+
+    def _abrir_menu_principal(self, usuario):
         root = ttk.Window(themename="flatly")
+        root.state("zoomed")  # abre em tela cheia
         Menu_Principal(root, self.daos)
         root.mainloop()
 

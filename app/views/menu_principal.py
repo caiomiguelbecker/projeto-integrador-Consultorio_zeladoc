@@ -21,9 +21,9 @@ class Menu_Principal:
         self.master = master
         self.daos = daos
 
-        self.master.title("ZelaDoc - Menu Principal")
-        self.master.geometry("1100x650")
-        self.master.minsize(950, 600)
+        self.master.title("Menu Principal")
+        self.master.geometry("1100x850")
+        self.master.minsize(950, 700)
 
         self._montar_layout()
 
