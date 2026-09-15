@@ -1,6 +1,19 @@
+import sys
+
 import ttkbootstrap as ttk
 
 from app.core.database import Database
+from app.core.icone_utils import aplicar_icone
+
+if sys.platform.startswith("win"):
+    import ctypes
+
+    try:
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
+            "zeladoc.consultorio.app.1"
+        )
+    except Exception:
+        pass
 
 from app.dao.convenio_dao import Convenio_DAO
 from app.dao.especialidade_dao import Especialidade_DAO
@@ -52,7 +65,8 @@ class Zeladoc_Application:
 
     def _abrir_menu_principal(self, usuario):
         root = ttk.Window(themename="flatly")
-        root.state("zoomed")  # abre em tela cheia
+        aplicar_icone(root)
+        root.state("zoomed")  
         Menu_Principal(root, self.daos)
         root.mainloop()
 

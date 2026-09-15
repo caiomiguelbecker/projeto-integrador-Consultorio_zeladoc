@@ -6,6 +6,7 @@ from ttkbootstrap.constants import PRIMARY, INFO, DANGER, LEFT, X, BOTH
 from PIL import Image, ImageTk
 
 from app.core.idioma import Idioma, t
+from app.core.icone_utils import aplicar_icone
 
 CAMINHO_LOGO = os.path.join(
     os.path.dirname(__file__), "..", "..", "assets", "logo.png"
@@ -13,7 +14,6 @@ CAMINHO_LOGO = os.path.join(
 
 
 class Menu_Principal:
-   
 
     def __init__(self, master, daos):
         self.master = master
@@ -28,11 +28,11 @@ class Menu_Principal:
         self._janela_exames = None
         self._janela_usuarios = None
 
+        aplicar_icone(self.master)
         self.master.state("zoomed")
         self.master.resizable(False, False)
-                
-        self._montar_layout()
 
+        self._montar_layout()
    
     def _montar_layout(self):
         for widget in self.master.winfo_children():
