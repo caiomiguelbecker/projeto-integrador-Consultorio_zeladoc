@@ -180,6 +180,16 @@ class Idioma:
             "consulta.erro_salve_consulta_primeiro": "Salve a consulta antes de adicionar exames.",
             "consulta.erro_ao_adicionar_exame": "Problemas ao adicionar exame à consulta",
             "consulta.erro_ao_remover_exame": "Problemas ao remover exame da consulta",
+            
+            # Tela de Login
+            "login.titulo": "Entrar",
+            "login.email": "Email",
+            "login.senha": "Senha",
+            "login.entrar": "Entrar",
+            "login.aviso": "Aviso",
+            "login.campos_obrigatorios": "Campos Obrigatórios!",
+            "login.erro": "Erro",
+            "login.credenciais_invalidas": "Login ou Credenciais Inválidas!",
         },
         "en": {
 
@@ -358,6 +368,16 @@ class Idioma:
             "consulta.erro_salve_consulta_primeiro": "Save the appointment before adding exams.",
             "consulta.erro_ao_adicionar_exame": "Problem adding exam to appointment",
             "consulta.erro_ao_remover_exame": "Problem removing exam from appointment",
+            
+            # Login screen
+            "login.titulo": "Login",
+            "login.email": "Email",
+            "login.senha": "Password",
+            "login.entrar": "Sign in",
+            "login.aviso": "Warning",
+            "login.campos_obrigatorios": "Required fields!",
+            "login.erro": "Error",
+            "login.credenciais_invalidas": "Invalid login or credentials!",
         }
     }
 

@@ -6,6 +6,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 
 from app.core import idioma
+from app.core.icone_utils import aplicar_icone
 
 CAMINHO_LOGO = os.path.join(
     os.path.dirname(__file__), "..", "..", "assets", "logo.png"
@@ -21,6 +22,7 @@ class LoginView:
         self._controller = usuario_controller
 
         self.janela = ttk.Window(themename="flatly")
+        aplicar_icone(self.janela)
         self.janela.resizable(False, False)
 
         self._montar_tela()
@@ -86,10 +88,10 @@ class LoginView:
         self._atualizar_textos()
 
     def _atualizar_textos(self):
-        self.janela.title(idioma.t("Login"))
-        self.lbl_email.config(text=idioma.t("Email"))
-        self.lbl_senha.config(text=idioma.t("Senha"))
-        self.btn_entrar.config(text=idioma.t("Entrar"))
+        self.janela.title(idioma.t("login.titulo"))
+        self.lbl_email.config(text=idioma.t("login.email"))
+        self.lbl_senha.config(text=idioma.t("login.senha"))
+        self.btn_entrar.config(text=idioma.t("login.entrar"))
         self.idioma_var.set("Português" if idioma.Idioma.ATUAL == "pt" else "English")
 
     def _fazer_login(self):
@@ -97,13 +99,13 @@ class LoginView:
         senha = self.entry_senha.get().strip()
 
         if not email or not senha:
-            messagebox.showwarning(idioma.t("Aviso"), idioma.t("Campos Obrigatórios!"))
+            messagebox.showwarning(idioma.t("login.aviso"), idioma.t("login.campos_obrigatorios"))
             return
 
         usuario = self._controller.autenticar(email, senha)
 
         if usuario is None:
-            messagebox.showerror(idioma.t("Erro"), idioma.t("Login ou Credenciais Inválidas!"))
+            messagebox.showerror(idioma.t("login.erro"), idioma.t("login.credenciais_invalidas"))
             return
 
         self.janela.destroy()

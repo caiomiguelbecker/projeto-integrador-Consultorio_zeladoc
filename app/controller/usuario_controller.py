@@ -4,16 +4,6 @@ from app.models.usuario import Usuario
 from app.core.idioma import Idioma
 from app.core.senha_utils import Senha_Utils
 
-# AQUI NÃO ENTRARIA, PODEMOS DELETAR
-# class Usuario_Controller:
-
-#     def __init__(self, dao, view):
-#         self.dao = dao
-#         self.view = view
-#         self.usuario_selecionado = None
-
-#     def new(self):
-#         self.view.limpar_campos()
 
 class Usuario_Controller:
 
