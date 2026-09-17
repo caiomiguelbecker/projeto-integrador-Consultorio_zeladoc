@@ -34,10 +34,34 @@ class Menu_Principal:
 
         self._montar_layout()
    
+    def _configurar_estilos_menu(self):
+        estilo = ttk.Style()
+        cores = estilo.colors
+
+        mapa_cores = {
+            "MenuPrimary.TButton": cores.primary,
+            "MenuInfo.TButton": cores.info,
+            "MenuDanger.TButton": cores.danger,
+        }
+
+        for nome_estilo, cor in mapa_cores.items():
+            estilo.configure(
+                nome_estilo,
+                font=("Arial", 12),
+                background=cor,
+                foreground=cores.selectfg,
+                borderwidth=0,
+                focuscolor=cor,
+            )
+            estilo.map(nome_estilo, background=[("active", cor)])
+   
+   
     def _montar_layout(self):
         for widget in self.master.winfo_children():
             widget.destroy()
 
+        self._configurar_estilos_menu()
+            
         self.master.title(t("app_titulo") + " - " + t("menu_sair") if False else "ZelaDoc - Menu Principal")
 
         container = ttk.Frame(self.master, padding=40)
@@ -61,19 +85,17 @@ class Menu_Principal:
         frame.grid(row=2, column=0, sticky="ns", padx=10)
 
         itens = [
-            (f"  {t('menu_pacientes')}", PRIMARY, self.abrir_pacientes),
-            (f"  {t('menu_medicos')}", PRIMARY, self.abrir_medicos),
-            (f"  {t('menu_consultas')}", PRIMARY, self.abrir_consultas),
-            (f"  {t('menu_prontuarios')}", PRIMARY, self.abrir_prontuarios),
-            
+            (f"  {t('menu_pacientes')}", "MenuPrimary.TButton", self.abrir_pacientes),
+            (f"  {t('menu_medicos')}", "MenuPrimary.TButton", self.abrir_medicos),
+            (f"  {t('menu_consultas')}", "MenuPrimary.TButton", self.abrir_consultas),
+            (f"  {t('menu_prontuarios')}", "MenuPrimary.TButton", self.abrir_prontuarios),
         ]
 
-        for texto, estilo, comando in itens:
+        for texto, nome_estilo, comando in itens:
             btn = ttk.Button(
-                frame, text=texto, bootstyle=estilo, width=40, command=comando
+                frame, text=texto, style=nome_estilo, width=40, command=comando
             )
             btn.pack(pady=6, fill=X, ipady=20)
-
     
     def _montar_logo(self, parent):
         try:
@@ -115,7 +137,7 @@ class Menu_Principal:
         idioma_combo.bind("<<ComboboxSelected>>", self._ao_trocar_idioma)
 
         sair_btn = ttk.Button(
-            frame, text=f"↪  {t('menu_sair')}", bootstyle=DANGER, width=22, command=self.sair
+            frame, text=f"↪  {t('menu_sair')}", style="MenuDanger.TButton", width=22, command=self.sair
         )
         sair_btn.pack(pady=6, padx=20, fill=X, ipady=10)
 
@@ -135,18 +157,18 @@ class Menu_Principal:
         frame.grid(row=2, column=2, sticky="ns", padx=10) 
 
         itens = [
-            (f"  {t('menu_especialidades')}", INFO, self.abrir_especialidades),
-            (f"  {t('menu_exames')}", INFO, self.abrir_exames),
-            (f"  {t('menu_usuarios')}", INFO, self.abrir_usuarios),
-            (f"  {t('menu_convenios')}", INFO, self.abrir_convenios),
+            (f"  {t('menu_especialidades')}", "MenuInfo.TButton", self.abrir_especialidades),
+            (f"  {t('menu_exames')}", "MenuInfo.TButton", self.abrir_exames),
+            (f"  {t('menu_usuarios')}", "MenuInfo.TButton", self.abrir_usuarios),
+            (f"  {t('menu_convenios')}", "MenuInfo.TButton", self.abrir_convenios),
         ]
 
-        for texto, estilo, comando in itens:
+        for texto, nome_estilo, comando in itens:
             btn = ttk.Button(
-                frame, text=texto, bootstyle=estilo, width=40, command=comando
+                frame, text=texto, style=nome_estilo, width=40, command=comando
             )
             btn.pack(pady=6, fill=X, ipady=20)
-  
+    
     def _abrir_janela(self, atributo_janela, classe_view, classe_controller, **kwargs_controller):
         janela_existente = getattr(self, atributo_janela)
 
@@ -155,7 +177,7 @@ class Menu_Principal:
             janela_existente.focus_force()
             return
 
-        janela = tk.Toplevel(self.master)
+        janela = tk.Toplevel(self.master, background="#FFFFFF")
         setattr(self, atributo_janela, janela)
 
         controller = classe_controller(view=None, **kwargs_controller)
