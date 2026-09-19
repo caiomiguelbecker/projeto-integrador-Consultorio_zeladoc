@@ -19,6 +19,9 @@ class Prontuario_View:
         self.root.title(Idioma.t("prontuario.janela_titulo"))
         self.root.geometry("700x600")
         self.root.resizable(False, False)
+        
+        estilo = ttk.Style()
+        self.root.configure(background=estilo.colors.bg)
 
     def criar_componentes(self):
         self.lbl_titulo = ttk.Label(

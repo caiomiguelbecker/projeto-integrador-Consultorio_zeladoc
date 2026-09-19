@@ -8,17 +8,10 @@ CAMINHO_ICO = os.path.join(
     os.path.dirname(__file__), "..", "..", "assets", "icon.ico"
 )
 
-# tenta reaplicar o ícone várias vezes, pois o ttkbootstrap pode
-# redefinir o ícone sozinho enquanto ainda está carregando o tema
 _TENTATIVAS_MS = [50, 150, 300, 600, 1000, 1500, 2500]
 
 
 def aplicar_icone(janela):
-    """
-    Aplica o ícone do Zeladoc na janela (título e, no Windows, na barra
-    de tarefas). Deve ser chamado logo após a criação de cada
-    ttk.Window/Toplevel.
-    """
     janela.update_idletasks()
     for atraso in _TENTATIVAS_MS:
         janela.after(atraso, lambda j=janela: _definir_icone(j))

@@ -18,6 +18,9 @@ class Especialidade_View:
         self.root.title(Idioma.t("especialidade.janela_titulo"))
         self.root.geometry("560x460")
         self.root.resizable(False, False)
+        
+        estilo = ttk.Style()
+        self.root.configure(background=estilo.colors.bg)
 
     def criar_componentes(self):
         self.lbl_titulo = ttk.Label(

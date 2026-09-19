@@ -182,9 +182,9 @@ class Idioma:
             "consulta.erro_ao_remover_exame": "Problemas ao remover exame da consulta",
             
             # Tela de Login
-            "login.titulo": "Entrar",
-            "login.email": "Email",
-            "login.senha": "Senha",
+            "login.titulo": "Login",
+            "login.email": "Email:",
+            "login.senha": "Senha:",
             "login.entrar": "Entrar",
             "login.aviso": "Aviso",
             "login.campos_obrigatorios": "Campos Obrigatórios!",
@@ -371,8 +371,8 @@ class Idioma:
             
             # Login screen
             "login.titulo": "Login",
-            "login.email": "Email",
-            "login.senha": "Password",
+            "login.email": "Email:",
+            "login.senha": "Password:",
             "login.entrar": "Sign in",
             "login.aviso": "Warning",
             "login.campos_obrigatorios": "Required fields!",
