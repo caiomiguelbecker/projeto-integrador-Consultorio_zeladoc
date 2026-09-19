@@ -23,6 +23,9 @@ class Consulta_View:
         self.root.title(Idioma.t("consulta.janela_titulo"))
         self.root.geometry("720x760")
         self.root.resizable(False, False)
+        
+        estilo = ttk.Style()
+        self.root.configure(background=estilo.colors.bg)
 
     def criar_componentes(self):
         self.lbl_titulo = ttk.Label(

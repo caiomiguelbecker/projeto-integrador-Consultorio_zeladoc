@@ -2,6 +2,7 @@ import os
 
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import LEFT, PRIMARY, INFO
+from app.core.tooltip_utils import Tooltip
 from tkinter import messagebox
 from PIL import Image, ImageTk
 
@@ -20,6 +21,7 @@ class LoginView:
     def __init__(self, usuario_controller, ao_autenticar):
         self._ao_autenticar = ao_autenticar
         self._controller = usuario_controller
+        self._senha_visivel = False
 
         self.janela = ttk.Window(themename="flatly")
         aplicar_icone(self.janela)
@@ -58,17 +60,33 @@ class LoginView:
 
         self.lbl_email = ttk.Label(frame)
         self.lbl_email.pack(anchor="w")
-        self.entry_email = ttk.Entry(frame, width=32)
+        self.entry_email = ttk.Entry(frame, width=54)
         self.entry_email.pack(pady=(0, 10))
 
         self.lbl_senha = ttk.Label(frame)
         self.lbl_senha.pack(anchor="w")
-        self.entry_senha = ttk.Entry(frame, width=32, show="*")
-        self.entry_senha.pack(pady=(0, 20))
+
+        frame_senha = ttk.Frame(frame)
+        frame_senha.pack(fill="x", pady=(0, 20))
+
+        self.entry_senha = ttk.Entry(frame_senha, show="*")
+        self.entry_senha.pack(side="left", fill="x", expand=True)
         self.entry_senha.bind("<Return>", lambda e: self._fazer_login())
+
+        self.btn_mostrar_senha = ttk.Button(
+            frame_senha, text="👁", width=3, bootstyle="secondary-outline",
+            command=self._alternar_senha
+        )
+        self.btn_mostrar_senha.pack(side="left", padx=(6, 0))
+        Tooltip(self.btn_mostrar_senha, "Mostrar/ocultar senha")
 
         self.btn_entrar = ttk.Button(frame, command=self._fazer_login, bootstyle="danger", width=20)
         self.btn_entrar.pack(pady=(10, 0))
+
+    def _alternar_senha(self):
+        self._senha_visivel = not self._senha_visivel
+        self.entry_senha.config(show="" if self._senha_visivel else "*")
+        self.btn_mostrar_senha.config(text="🙈" if self._senha_visivel else "👁")
 
     def _montar_logo(self, parent):
         try:
