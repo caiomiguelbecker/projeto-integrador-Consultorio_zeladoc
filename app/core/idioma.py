@@ -31,6 +31,19 @@ class Idioma:
             "menu_prontuarios": "Prontuários",
             "menu_sair": "Sair",
             "menu_idioma": "English",
+            "menu_modo_escuro": "🌙  Modo Escuro",
+            "menu_modo_claro": "☀️  Modo Claro",
+
+            "dica_pacientes": "Cadastrar, editar e consultar pacientes",
+            "dica_medicos": "Gerenciar médicos e suas especialidades",
+            "dica_consultas": "Agendar e acompanhar consultas",
+            "dica_prontuarios": "Consultar o histórico clínico dos pacientes",
+            "dica_especialidades": "Cadastrar especialidades médicas",
+            "dica_exames": "Cadastrar tipos de exames",
+            "dica_usuarios": "Gerenciar usuários com acesso ao sistema",
+            "dica_convenios": "Cadastrar convênios aceitos",
+            "dica_alternar_tema": "Alternar entre modo claro e escuro",
+            "dica_sair": "Sair do sistema",
 
             # Tela de Convênios
             "convenio.janela_titulo": "CRUD de Convênios",
@@ -219,6 +232,19 @@ class Idioma:
             "menu_prontuarios": "Medical Records",
             "menu_sair": "Exit",
             "menu_idioma": "Português",
+            "menu_modo_escuro": "🌙  Dark Mode",
+            "menu_modo_claro": "☀️  Light Mode",
+
+            "dica_pacientes": "Register, edit and look up patients",
+            "dica_medicos": "Manage doctors and their specialties",
+            "dica_consultas": "Schedule and track appointments",
+            "dica_prontuarios": "View patients' medical history",
+            "dica_especialidades": "Register medical specialties",
+            "dica_exames": "Register types of exams",
+            "dica_usuarios": "Manage users with system access",
+            "dica_convenios": "Register accepted insurance plans",
+            "dica_alternar_tema": "Switch between light and dark mode",
+            "dica_sair": "Exit the system",
 
             # Insurance plans screen
             "convenio.janela_titulo": "Insurance Plan Management",
