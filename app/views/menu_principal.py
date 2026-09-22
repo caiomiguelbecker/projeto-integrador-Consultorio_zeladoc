@@ -109,13 +109,13 @@ class Menu_Principal:
 
         itens = [
             (f"  {t('menu_pacientes')}", self.abrir_pacientes,
-             "Cadastrar, editar e consultar pacientes"),
+             t('dica_pacientes')),
             (f"  {t('menu_medicos')}", self.abrir_medicos,
-             "Gerenciar médicos e suas especialidades"),
+             t('dica_medicos')),
             (f"  {t('menu_consultas')}", self.abrir_consultas,
-             "Agendar e acompanhar consultas"),
+             t('dica_consultas')),
             (f"  {t('menu_prontuarios')}", self.abrir_prontuarios,
-             "Consultar o histórico clínico dos pacientes"),
+             t('dica_prontuarios')),
         ]
 
         for texto, comando, dica in itens:
@@ -167,7 +167,7 @@ class Menu_Principal:
         idioma_combo.pack(pady=(30, 12), fill=X, padx=20, ipady=4)
         idioma_combo.bind("<<ComboboxSelected>>", self._ao_trocar_idioma)
 
-        texto_tema = "☀️  Modo Claro" if self.modo_escuro else "🌙  Modo Escuro"
+        texto_tema = t('menu_modo_claro') if self.modo_escuro else t('menu_modo_escuro')
         btn_tema = ttk.Button(
             frame, text=texto_tema, bootstyle="secondary-outline", width=22,
             command=self._alternar_tema
@@ -203,13 +203,13 @@ class Menu_Principal:
 
         itens = [
             (f"  {t('menu_especialidades')}", self.abrir_especialidades,
-             "Cadastrar especialidades médicas"),
+             t('dica_especialidades')),
             (f"  {t('menu_exames')}", self.abrir_exames,
-             "Cadastrar tipos de exames"),
+             t('dica_exames')),
             (f"  {t('menu_usuarios')}", self.abrir_usuarios,
-             "Gerenciar usuários com acesso ao sistema"),
+             t('dica_usuarios')),
             (f"  {t('menu_convenios')}", self.abrir_convenios,
-             "Cadastrar convênios aceitos"),
+             t('dica_convenios')),
         ]
 
         for texto, comando, dica in itens:
